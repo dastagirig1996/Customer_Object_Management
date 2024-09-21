@@ -12,6 +12,7 @@ from .serializers import CustomerSerializer
 import jwt
 from django.contrib.auth import authenticate
 from customers.auth import JWTAuth
+import time 
 
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
 
@@ -46,13 +47,13 @@ class LoginView(APIView):
         if user:
             # payload = {"userId": user.id}
             access_payload = { 'userId': user.id,
-                                'exp': datetime.datetime.now() + datetime.timedelta(minutes=2),
+                                'exp': time.time()+60*5,
                                 # 'iat': datetime.datetime.now()
                                   }
             resp_data["acces_token"] = jwt.encode(access_payload, private_key, algorithm="HS256")
   
             refresh_payload = {'userId': user.id,
-                                'exp': datetime.datetime.now() + datetime.timedelta(days = 7),
+                                'exp': time.time()+60*60*24,
                                 # 'iat': datetime.datetime.now() 
                                 }
             
