@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
+
+# from django.http import 
 import datetime
 
 # Create your views here.
@@ -41,6 +43,14 @@ class LoginView(APIView):
             resp_data["message"] = "OK"
             return Response(resp_data, status=status.HTTP_201_CREATED)
         return Response(resp_data, status=status.HTTP_401_UNAUTHORIZED)
+
+class Refresh_token(APIView):
+    def get(request,token):
+        refersh_token = Refresh_token.objects.get(name = token)
+        if refersh_token:
+            return redirect('login/')
+        else:
+            return Response({"message":"Please login again"},  status=status.HTTP_403_FORBIDDEN)
 
 class CustomerDetailView(APIView):
     def get(self, request, id=None):
