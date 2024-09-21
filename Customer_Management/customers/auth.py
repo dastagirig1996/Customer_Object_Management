@@ -27,7 +27,7 @@ class JWTAuth(TokenAuthentication):
         # import pdb;pdb.set_trace()
         try:
             payload = jwt.decode(key, private_key, algorithms="HS256")
-            user_instance = User.objects.get(pk = payload.get("userId"))
+            user_instance = User.objects.get(pk = payload.get("user_id"))
 
         except Exception as err:
             raise exceptions.AuthenticationFailed('Invalid tokenn.')

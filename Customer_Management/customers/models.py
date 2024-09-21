@@ -10,7 +10,7 @@ class Customer(models.Model):
 
 class Refresh_Token(models.Model):
     name = models.CharField(max_length=500)
-    user = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
 # class BaseAbstarctModel(models.Model):
 #      name = models.CharField(max_length=250, unique=True)

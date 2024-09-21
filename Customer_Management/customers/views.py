@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
-
+from django.http import JsonResponse
 # from django.http import 
 import datetime
+import json
 
 # Create your views here.
 from rest_framework.views import APIView
@@ -15,8 +16,30 @@ import jwt
 from django.contrib.auth import authenticate
 from customers.auth import JWTAuth
 import time 
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+
+ACCESS_TOKEN_EXPIRY = 20
+REFRESH_TOKEN_EXPIRY = 60*60*24*7
+
 
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
+
+def create_access_token(user_id):
+    payload = {
+        'user_id': user_id,
+        'exp': time.time() + ACCESS_TOKEN_EXPIRY,
+    }
+    access_token = jwt.encode(payload, private_key, algorithm='HS256')
+    return access_token
+
+def create_refresh_token(user_id):
+    payload = {
+        'user_id': user_id,
+        'exp': time.time()  + REFRESH_TOKEN_EXPIRY,
+    }
+    refresh_token = jwt.encode(payload, private_key, algorithm='HS256')
+    return refresh_token
+
 
 class LoginView(APIView):
     authentication_classes = []
@@ -25,21 +48,15 @@ class LoginView(APIView):
         data = request.data
         resp_data = {"acces_token": None,"refresh_token":None, "message": ""}
         user = authenticate(**data)
+        user_id = user.id
         print("came"*10)
         print(request, "n"*10)
         # print(request.Meta)
         if user:
-            access_payload = { 'userId': user.id,
-                                'exp': time.time()+60*5,
-                                # 'iat': datetime.datetime.now()
-                                  }
-            resp_data["acces_token"] = jwt.encode(access_payload, private_key, algorithm="HS256")
-  
-            refresh_payload = {'userId': user.id,
-                                'exp': time.time()+60*60*24*7,
-                                # 'iat': datetime.datetime.now() 
-                                }
-            resp_data["refresh_token"] = jwt.encode(refresh_payload, private_key, algorithm="HS256")
+            access_token = create_access_token(user_id)
+            resp_data["acces_token"] = access_token
+            refresh_token = create_refresh_token(user_id)
+            resp_data["refresh_token"] = refresh_token
             resp_data["message"] = "OK"
             return Response(resp_data, status=status.HTTP_201_CREATED)
         return Response(resp_data, status=status.HTTP_401_UNAUTHORIZED)
@@ -47,10 +64,47 @@ class LoginView(APIView):
 class Refresh_token(APIView):
     def get(request,token):
         refersh_token = Refresh_token.objects.get(name = token)
+        print(refersh_token)
         if refersh_token:
-            return redirect('login/')
+            return redirect('login/',)
         else:
             return Response({"message":"Please login again"},  status=status.HTTP_403_FORBIDDEN)
+
+
+
+def decode_refresh_token(token):
+    try:
+        payload = jwt.decode(token, private_key, algorithms=['HS256'])
+        return payload['user_id']
+    except ExpiredSignatureError:
+        raise Exception('Refresh token has expired')
+    except InvalidTokenError:
+        raise Exception('Invalid token')
+
+
+def refresh_access_token_view(request):
+    if request.method == 'POST':
+        try:
+            print("get refresh token from cookie")
+            refresh_token = request.COOKIES.get('refresh_token')
+        except:
+            print("get refresh token from request_body")
+            body = json.loads(request.body)
+            refresh_token = body.get('refresh_token')
+        
+        if not refresh_token:
+            return JsonResponse({'error': 'Refresh token is missing'}, status=400)
+
+        user_id = decode_refresh_token(refresh_token)
+        if isinstance(user_id, JsonResponse):
+            return user_id  
+        new_access_token = create_access_token(user_id)
+        return JsonResponse({'access_token': new_access_token})
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+
+
 
 class CustomerDetailView(APIView):
     def get(self, request, id=None):
@@ -109,7 +163,18 @@ class CustomerDetailView(APIView):
 
 
 
-
+# class Ref
+# def refresh_access_token(refresh_token):
+#     try:
+#         # Validate the refresh token
+#         user_id = decode_refresh_token(refresh_token)
+        
+#         # If valid, create a new access token
+#         new_access_token = create_access_token(user_id)
+#         return new_access_token
+    
+#     except Exception as err:
+#         return {"error": err}
 
 
 
