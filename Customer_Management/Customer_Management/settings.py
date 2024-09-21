@@ -146,6 +146,12 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+
 ]
+CORS_ALLOWED_ORIGINS = [
+    'http://192.168.1.69:3000',
+]
+ 
 CORS_ALLOW_ALL_ORIGINS = True
+
 
