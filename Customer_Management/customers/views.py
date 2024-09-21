@@ -16,6 +16,96 @@ import time
 
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
 
+class LoginView(APIView):
+    authentication_classes = []
+    permission_classes = []
+    def post(self, request):
+        data = request.data
+        resp_data = {"acces_token": None,"refresh_token":None, "message": ""}
+        user = authenticate(**data)
+        print("came"*10)
+        print(request, "n"*10)
+        print(request.Meta)
+        if user:
+            access_payload = { 'userId': user.id,
+                                'exp': time.time()+60*5,
+                                # 'iat': datetime.datetime.now()
+                                  }
+            resp_data["acces_token"] = jwt.encode(access_payload, private_key, algorithm="HS256")
+  
+            refresh_payload = {'userId': user.id,
+                                'exp': time.time()+60*60*24*7,
+                                # 'iat': datetime.datetime.now() 
+                                }
+            resp_data["refresh_token"] = jwt.encode(refresh_payload, private_key, algorithm="HS256")
+            resp_data["message"] = "OK"
+            return Response(resp_data, status=status.HTTP_201_CREATED)
+        return Response(resp_data, status=status.HTTP_401_UNAUTHORIZED)
+
+class CustomerDetailView(APIView):
+    def get(self, request, id=None):
+        if id:
+            try:
+                customer = Customer.objects.get(id=id)
+                serializer = CustomerSerializer(customer)
+            except Customer.DoesNotExist:
+                return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            customers = Customer.objects.all()
+            serializer = CustomerSerializer(customers, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def put(self, request, id=None):
+        try:
+            customer = Customer.objects.get(id=id)
+        except Customer.DoesNotExist:
+            return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CustomerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def delete(self, request, id=None):
+        try:
+            customer = Customer.objects.get(id=id)
+        except Customer.DoesNotExist:
+            return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        customer.delete()
+        return Response({"message": "Customer deletion done"}, status=status.HTTP_204_NO_CONTENT)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # class LoginAPI(APIView):
 #     authentication_classes = []
@@ -32,35 +122,6 @@ private_key = "gchvbnmpltfb3opmfnic4+54sff"
 #             resp_data["message"] = "OK"
 #             return Response(resp_data, status=status.HTTP_201_CREATED)
 #         return Response(resp_data, status=status.HTTP_401_UNAUTHORIZED)
-
-class LoginView(APIView):
-    authentication_classes = []
-    permission_classes = []
-    def post(self, request):
-        data = request.data
-        resp_data = {"acces_token": None,"refresh_token":None, "message": ""}
-        user = authenticate(**data)
-        print("came"*10)
-        curr = datetime.datetime.now()
-        exp = datetime.datetime.now() + datetime.timedelta(minutes=15)
-        print(curr,exp)
-        if user:
-            # payload = {"userId": user.id}
-            access_payload = { 'userId': user.id,
-                                'exp': time.time()+60*5,
-                                # 'iat': datetime.datetime.now()
-                                  }
-            resp_data["acces_token"] = jwt.encode(access_payload, private_key, algorithm="HS256")
-  
-            refresh_payload = {'userId': user.id,
-                                'exp': time.time()+60*60*24,
-                                # 'iat': datetime.datetime.now() 
-                                }
-            
-            resp_data["refresh_token"] = jwt.encode(refresh_payload, private_key, algorithm="HS256")
-            resp_data["message"] = "OK"
-            return Response(resp_data, status=status.HTTP_201_CREATED)
-        return Response(resp_data, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # def create_tokens(user_id):
@@ -116,48 +177,48 @@ class LoginView(APIView):
 
 
 
-class CustomerDetailView(APIView):
-    def get(self, request, id=None):
-        if id:
-            try:
-                customer = Customer.objects.get(id=id)
-                serializer = CustomerSerializer(customer)
-            except Customer.DoesNotExist:
-                return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
-        else:
-            customers = Customer.objects.all()
-            serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+# class CustomerDetailView(APIView):
+#     def get(self, request, id=None):
+#         if id:
+#             try:
+#                 customer = Customer.objects.get(id=id)
+#                 serializer = CustomerSerializer(customer)
+#             except Customer.DoesNotExist:
+#                 return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+#         else:
+#             customers = Customer.objects.all()
+#             serializer = CustomerSerializer(customers, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(self, request):
-        serializer = CustomerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = CustomerSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def put(self, request, id=None):
-        try:
-            customer = Customer.objects.get(id=id)
-        except Customer.DoesNotExist:
-            return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
+#     def put(self, request, id=None):
+#         try:
+#             customer = Customer.objects.get(id=id)
+#         except Customer.DoesNotExist:
+#             return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        serializer = CustomerSerializer(customer, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#         serializer = CustomerSerializer(customer, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def delete(self, request, id=None):
-        try:
-            customer = Customer.objects.get(id=id)
-        except Customer.DoesNotExist:
-            return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
+#     def delete(self, request, id=None):
+#         try:
+#             customer = Customer.objects.get(id=id)
+#         except Customer.DoesNotExist:
+#             return Response({"error": "Customer data not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        customer.delete()
-        return Response({"message": "Customer deletion done"}, status=status.HTTP_204_NO_CONTENT)
+#         customer.delete()
+#         return Response({"message": "Customer deletion done"}, status=status.HTTP_204_NO_CONTENT)
     
 
 

@@ -34,6 +34,37 @@ class JWTAuth(TokenAuthentication):
         return (user_instance, key)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #       def authenticate(self, request):
 #         auth = get_authorization_header(request).split()
 
