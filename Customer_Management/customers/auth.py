@@ -3,6 +3,7 @@ import jwt
 # from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from rest_framework import exceptions
+from rest_framework.permissions import BasePermission
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
 
 
@@ -35,6 +36,37 @@ class JWTAuth(TokenAuthentication):
 
 
 
+class CustomPermission(BasePermission):
+    def has_permission(self, request, view):
+        print("came to perm", request.META)
+        given_api = request.META["PATH_INFO"] # /customers/hflssd
+        c = 0
+        path = ''
+        for ch in given_api:
+            path += ch
+            if ch == '/':
+                c += 1
+            if c == 2:
+                break
+
+        get_api = Api.objects.get(name=path)
+        role_id = request.user.role.id
+        get_permissions = Permissions.objects.get(role=role_id, api=get_api.id)  
+
+        methods = {
+            "GET": get_permissions.has_get,
+            "POST": get_permissions.has_post,
+            "PUT": get_permissions.has_put,
+            "DELETE": get_permissions.has_delete
+
+        }  
+        # import pdb;pdb.set_trace()
+        if given_api.startswith(str(get_api.name)) and methods[request.method]:
+            return True
+        
+        return False
+
+        
 
 
 
