@@ -27,7 +27,7 @@ class LoginView(APIView):
         user = authenticate(**data)
         print("came"*10)
         print(request, "n"*10)
-        print(request.Meta)
+        # print(request.Meta)
         if user:
             access_payload = { 'userId': user.id,
                                 'exp': time.time()+60*5,
