@@ -39,6 +39,9 @@ To get a local copy up and running, follow these steps:
 
 
 cd Customer_Object_Management
+python3 -m venv venv
+source venv/bin/activate
+
 
 python3 -m venv venv
 source venv/bin/activate
