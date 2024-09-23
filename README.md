@@ -43,21 +43,25 @@ To get a local copy up and running, follow these steps:
 
 
 3. **Actiavte Vertual Envirinment
-```bash
-python3 -m venv venv
-source venv/bin/activate
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   
 4. **Install Dependinces
-```bash
-pip install -r requirements.txt
+   ```bash
+   pip install -r requirements.txt
+   
 5. **Makemigrations
-```bash
-python manage.py makemigrations
+   ```bash
+   python manage.py makemigrations
+   
 6.**Migrate
-```bash
-python manage.py migrate
+   ```bash
+   python manage.py migrate
+
 7. **Run the server
-```bash
-python manage.py runserver
+   ```bash
+   python manage.py runserver
 
 
 
