@@ -52,7 +52,7 @@ class LoginView(APIView):
 
         if user:
             access_token = create_access_token(user_id, client_ip)
-            resp_data["acces_token"] = access_token
+            resp_data["access_token"] = access_token
             refresh_token = create_refresh_token(client_ip)
             resp_data["refresh_token"] = refresh_token
             resp_data["message"] = "OK"
