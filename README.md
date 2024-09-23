@@ -40,8 +40,20 @@ To get a local copy up and running, follow these steps:
 
 cd Customer_Object_Management
 ```bash
-cd Customer_Object_Management
+python3 -m venv venv
+source venv/bin/activate
 
+```bash
+pip install -r requirements.txt
+
+```bash
+python manage.py makemigrations
+
+```bash
+python manage.py migrate
+
+```bash
+python manage.py runserver
 
 
 
