@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Customer,RefreshToken
-from datetime import datetime
+from datetime import date
 
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,7 +25,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         return value
  
     def validate_date_of_birth(self, value):
-        if value <= datetime.today():
+        if value <= date.today():
             raise serializers.ValidationError("Please enter your correct date of birth")
         return value
 
