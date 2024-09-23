@@ -15,7 +15,7 @@ Customer Object Management is a RESTful API-based project built with Django and 
 - **Python**: Core programming language.
 - **Django**: Web framework for rapid development.
 - **Django REST Framework (DRF)**: For building the RESTful APIs.
-- **SQLite/MySQL**: Database for storing customer data (You can switch to other databases supported by Django).
+- **SQLite**: Database for storing customer data (You can switch to other databases supported by Django).
 - **Authentication**: Session-based or Token-based authentication.
 - **RESTful Services**: Create, retrieve, update, and delete customer information via APIs.
 
@@ -28,7 +28,7 @@ To get a local copy up and running, follow these steps:
 - Python 3.x
 - Django 3.x or above
 - Django REST Framework
-- SQLite (default) or MySQL
+- SQLite
 
 ### Installation
 
@@ -63,8 +63,6 @@ To get a local copy up and running, follow these steps:
 7. Run the server
    ```bash
    python manage.py runserver
-
-
 
 
 
