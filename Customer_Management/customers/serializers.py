@@ -25,7 +25,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         return value
  
     def validate_date_of_birth(self, value):
-        if value >= datetime.date.today():
+        if value <= datetime.date.today():
             raise serializers.ValidationError("Please enter your correct date of birth")
         return value
 
