@@ -7,15 +7,7 @@ from rest_framework import exceptions
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
 
 class JWTAuth(BaseAuthentication):
-    """
-    Simple token based authentication.
-
-    Clients should authenticate by passing the token key in the "Authorization"
-    HTTP header, prepended with the string "Token ".  For example:
-
-        Authorization: Token 401f7ac837da42b97f613d789819ff93537bee6a
-    """
-
+  
     keyword = 'Token'
     model = None
 
@@ -25,12 +17,6 @@ class JWTAuth(BaseAuthentication):
         from rest_framework.authtoken.models import Token
         return Token
 
-    """
-    A custom token model may be used, but must have the following properties.
-
-    * key -- The string identifying the token
-    * user -- The user to which the token belongs
-    """
 
     def authenticate(self, request):
         auth = get_authorization_header(request).split()
@@ -77,9 +63,6 @@ class JWTAuth(BaseAuthentication):
     def authenticate_header(self, request):
         return self.keyword
 
-
-# class JWTAuth(TokenAuthentication):
-   
         
         
     

@@ -1,10 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import JsonResponse
-# from django.http import 
 import datetime
 import json
-
-# Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -20,9 +17,8 @@ from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 Access_token_expiry_sec = 20
 Refresh_token_expiry_sec = 60*60*24*7
 
-
-
 private_key = "gchvbnmpltfb3opmfnic4+54sff"
+
 def create_access_token(user_id,ip):
     payload = {
         'user_id': user_id,
@@ -82,11 +78,6 @@ def decode_refresh_token(token):
 
 def refresh_access_token_view(request):
     if request.method == 'GET':
-        # try:
-        #     print("get refresh token from cookie")
-        #     refresh_token = request.COOKIES.get('refresh_token')
-        # except:
-        # import pdb; pdb.set_trace()
         try:
             print("get refresh token from request_body")
             body = json.loads(request.body)
@@ -145,7 +136,6 @@ class CustomerDetailView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     def delete(self, request, id=None):
         try:
