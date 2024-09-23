@@ -36,9 +36,10 @@ To get a local copy up and running, follow these steps:
 
    ```bash
    git clone https://github.com/dastagirig1996/Customer_Object_Management.git
-2. ** Change to Project directory
-```bash
-cd Customer_Object_Management
+   
+2. **Change to Project directory
+   ```bash
+   cd Customer_Object_Management
 
 
 3. **Actiavte Vertual Envirinment
