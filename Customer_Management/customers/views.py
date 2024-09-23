@@ -45,7 +45,7 @@ class LoginView(APIView):
     permission_classes = []
     def post(self, request):
         data = request.data
-        resp_data = {"acces_token": None,"refresh_token":None, "message": ""}
+        resp_data = {"access_token": None,"refresh_token":None, "message": ""}
         user = authenticate(**data)
         user_id = user.id
         client_ip = request._request.META.get('REMOTE_ADDR')
