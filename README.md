@@ -37,8 +37,9 @@ To get a local copy up and running, follow these steps:
    ```bash
    git clone https://github.com/dastagirig1996/Customer_Object_Management.git
 
-
+```bash
 cd Customer_Object_Management
+
 ```bash
 python3 -m venv venv
 source venv/bin/activate
