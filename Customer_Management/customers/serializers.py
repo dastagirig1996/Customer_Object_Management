@@ -20,12 +20,12 @@ class CustomerSerializer(serializers.ModelSerializer):
     def validate_phone_number(self, value):
         if not value.isdigit():
             raise serializers.ValidationError("Phone number must be contain only digits.")
-        if len(value) < 10 or len(value) > 15:
-            raise serializers.ValidationError("Phone number must be between 10 to 15 digits long.")
+        if len(value) < 10 or len(value) > 10:
+            raise serializers.ValidationError("Phone number must be 10 digits long.")
         return value
  
     def validate_date_of_birth(self, value):
-        if value <= date.today():
+        if value >= date.today():
             raise serializers.ValidationError("Please enter your correct date of birth")
         return value
 

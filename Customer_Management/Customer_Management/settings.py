@@ -130,19 +130,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES":[
         "customers.auth.JWTAuth",
     ]
-#     'DEFAULT_AUTHENTICATION_CLASSES':[
-#         "customers.authentication.JWTAuth",
-#     ],
 }
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.BaseAuthentication',
-#     ],
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ]
-# }
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',

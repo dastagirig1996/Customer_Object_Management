@@ -9,15 +9,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-# from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Customer,RefreshToken
 from .serializers import CustomerSerializer
 import jwt
+from .auth import JWTAuth
 from django.contrib.auth import authenticate
 import time 
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 
-Access_token_expiry_sec = 60
+Access_token_expiry_sec = 20
 Refresh_token_expiry_sec = 60*60*24*7
 
 
@@ -104,13 +104,16 @@ def refresh_access_token_view(request):
                 if token_obj.token == refresh_token:
                     user_id = token_obj.user_id
                     new_access_token = create_access_token(user_id,login_ip )
+                    return JsonResponse({'access_token': new_access_token},status = status.HTTP_202_ACCEPTED)
+
             except RefreshToken.DoesNotExist:
                 return Response({"error": "Token generation failed"}, status=status.HTTP_404_NOT_FOUND)
         
-        return JsonResponse({'access_token': new_access_token},status = status.HTTP_202_ACCEPTED)
     return JsonResponse({'error': 'Invalid request method'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+
 class CustomerDetailView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, id=None):
         if id:
             try:
