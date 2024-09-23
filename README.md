@@ -39,28 +39,10 @@ To get a local copy up and running, follow these steps:
 
 
 cd Customer_Object_Management
-python3 -m venv venv
-source venv/bin/activate
+```bash
+cd Customer_Object_Management
 
 
-python3 -m venv venv
-source venv/bin/activate
-
-
-pip install -r requirements.txt
-
-python manage.py migrate
-
-
-API Endpoints
-The following endpoints are available in the Customer Object Management API:
-
-Method	Endpoint	Description
-GET	/api/customers/	Retrieve all customers
-GET	/api/customers/<id>/	Retrieve a specific customer
-POST	/api/customers/	Create a new customer
-PUT	/api/customers/<id>/	Update an existing customer
-DELETE	/api/customers/<id>/	Delete a customer
 
 
 
